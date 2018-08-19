@@ -102,6 +102,12 @@ public class BrandServiceImpl implements BrandService {
 		return new PageResult(page.getTotal(), page.getResult());
 	}
 
+		@Override
+		public List<Map> selectOptionList() {
+			// TODO Auto-generated method stub
+			return brandMapper.selectOptionList();
+		}
+
 	
 
 	
