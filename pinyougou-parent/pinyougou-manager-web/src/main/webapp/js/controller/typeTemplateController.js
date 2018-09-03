@@ -83,7 +83,8 @@ app.controller('typeTemplateController' ,function($scope,$controller   ,typeTemp
 		);
 	}
 	
-	$scope.brandList={data:[]};
+	$scope.brandList={data:[]};//品牌列表
+    
 	//读取品牌列表
 	$scope.findBrandList=function(){
 		brandService.selectOptionList().success(
