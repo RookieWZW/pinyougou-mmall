@@ -3,6 +3,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
@@ -29,6 +31,9 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 	@Autowired
 	private TbTypeTemplateMapper typeTemplateMapper;
 	
+	
+	@Autowired
+	private RedisTemplate redisTemplate;
 	
 	@Autowired
 	private TbSpecificationOptionMapper specificationOptionMapper;
@@ -112,6 +117,8 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 		}
 		
 		Page<TbTypeTemplate> page= (Page<TbTypeTemplate>)typeTemplateMapper.selectByExample(example);		
+		
+		saveToRedis();
 		return new PageResult(page.getTotal(), page.getResult());
 	}
 
@@ -137,4 +144,20 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 					
 		}
 	
+		
+		
+		private void saveToRedis() {
+			List<TbTypeTemplate> typeTemplateList =findAll();
+			
+			for (TbTypeTemplate typeTemplate : typeTemplateList) {
+				List<Map> brandList = JSON.parseArray(typeTemplate.getBrandIds(), Map.class);
+				
+				redisTemplate.boundHashOps("brandList").put(typeTemplate.getId(), brandList);
+				
+				List<Map> specList = findSpecList(typeTemplate.getId());
+				
+				redisTemplate.boundHashOps("specList").put(typeTemplate.getId(), specList);
+			}
+			
+		}
 }
