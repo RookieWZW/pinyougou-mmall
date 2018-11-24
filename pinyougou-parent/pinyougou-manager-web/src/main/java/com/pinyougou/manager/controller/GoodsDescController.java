@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.pinyougou.page.service.ItemPageService;
 import com.pinyougou.pojo.TbGoodsDesc;
 import com.pinyougou.sellergoods.service.GoodsDescService;
 
@@ -110,5 +111,7 @@ public class GoodsDescController {
 	public PageResult search(@RequestBody TbGoodsDesc goodsDesc, int page, int rows  ){
 		return goodsDescService.findPage(goodsDesc, page, rows);		
 	}
+	
+	
 	
 }

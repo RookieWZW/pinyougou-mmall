@@ -19,6 +19,7 @@
 	          <value>WriteDateUseDateFormat</value>
 	        </array>
 	      </property>
+	      
 	    </bean>
 	  </mvc:message-converters>  
 	</mvc:annotation-driven>
