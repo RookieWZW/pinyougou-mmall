@@ -123,26 +123,30 @@ public class ContentServiceImpl implements ContentService {
 
 		@Override
 		public List<TbContent> findByCategoryId(Long categoryId) {
-			// TODO Auto-generated method stub
+			// 加入缓存的代码:
+			List<TbContent> list = (List<TbContent>) redisTemplate.boundHashOps("content").get(categoryId);
 			
-			List<TbContent> contentList = (List<TbContent>) redisTemplate.boundHashOps("content").get(categoryId);
-			if(contentList == null) {
-				System.out.println("从数据库读取数据放入缓存");
-				TbContentExample contentExample = new TbContentExample();
+			if(list==null){
+				System.out.println("查询数据库===================");
+				TbContentExample example = new TbContentExample();
+				Criteria criteria = example.createCriteria();
+				// 有效广告:
+				criteria.andStatusEqualTo("1");
 				
-				Criteria criteria2= contentExample.createCriteria();
+				criteria.andCategoryIdEqualTo(categoryId);
+				// 排序
+				example.setOrderByClause("sort_order");
 				
-				criteria2.andCategoryIdEqualTo(categoryId);
-				criteria2.andStatusEqualTo("1");//开启状态		
-				contentExample.setOrderByClause("sort_order");//排序		
-				contentList = contentMapper.selectByExample(contentExample);
+				list = contentMapper.selectByExample(example);
 				
-				redisTemplate.boundHashOps("content").put(categoryId, contentList);
-			}else {
-				System.out.println("从缓存读取数据");
+				redisTemplate.boundHashOps("content").put(categoryId, list);
+			}else{
+				System.out.println("从缓存中获取====================");
 			}
 			
-			return contentList;
+			
+			return list;
 		}
+	
 	
 }

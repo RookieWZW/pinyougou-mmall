@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.Criteria;
@@ -43,10 +44,13 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 	@Override
 	public Map search(Map searchMap) {
 		// TODO Auto-generated method stub
+		
+		String keywords= (String) searchMap.get("keywords");
+		searchMap.put("keywords", keywords.replace(" ", ""));
 		Map map = new HashMap();
 		map.putAll(searchList(searchMap));
 		searchList(searchMap);
-
+		
 		List<String> categoryList = searchCategoryList(searchMap);
 		map.put("categoryList", categoryList);
 
@@ -103,6 +107,46 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 
 		}
 
+		if(!"".equals(searchMap.get("price"))) {
+			String[] price = ((String) searchMap.get("price")).split("-");
+			if(!price[0].equals("0")) {
+				Criteria filterCriteria = new Criteria("item_price").greaterThanEqual(price[0]);
+				FilterQuery filterQuery= new SimpleFilterQuery(filterCriteria);
+				query.addFilterQuery(filterQuery);
+			}
+			
+			if(!price[1].equals("*")) {
+				Criteria filterCriteria = new Criteria("item_price").lessThanEqual(price[1]);
+				FilterQuery filterQuery = new SimpleFilterQuery(filterCriteria);
+				query.addFilterQuery(filterQuery);
+			}
+		}
+		
+		Integer pageNo = (Integer) searchMap.get("pageNo");
+		if(pageNo==null) {
+			pageNo =1;
+		}
+		Integer pageSize = (Integer) searchMap.get("pageSize");
+		if(pageSize==null) {
+			pageSize=20;
+		}
+		query.setOffset((pageNo-1)*pageSize);
+		query.setRows(pageSize);
+		
+		
+		String sortValue=(String) searchMap.get("sort");
+		String sortField = (String) searchMap.get("sortField");
+		if(sortValue!=null && !sortValue.equals("")) {
+			if(sortValue.equals("ASC")) {
+				Sort sort = new Sort(Sort.Direction.ASC,"item_"+sortField);
+				query.addSort(sort);
+			}
+			if(sortValue.equals("DESC")){		
+				Sort sort=new Sort(Sort.Direction.DESC, "item_"+sortField);
+				query.addSort(sort);
+			}	
+
+		}
 		// *********** 获取高亮结果集 ***********
 		// 高亮页对象
 		HighlightPage<TbItem> page = solrTemplate.queryForHighlightPage(query, TbItem.class);
@@ -121,6 +165,8 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 			}
 		}
 		map.put("rows", page.getContent());
+		map.put("totalPages", page.getTotalPages());
+		map.put("total", page.getTotalElements());
 		return map;
 
 	}
@@ -172,5 +218,30 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 
 		return map;
 	}
+
+	@Override
+	public void importList(List list) {
+		// TODO Auto-generated method stub
+		
+		solrTemplate.saveBean(list);
+		solrTemplate.commit();
+	}
+
+	@Override
+	public void deleteByGoodsIds(List goodsIdList) {
+		// TODO Auto-generated method stub
+		System.out.println("删除商品ID"+goodsIdList);
+		
+		Query query = new SimpleQuery();
+		
+		Criteria criteria = new Criteria("item_goodsid").in(goodsIdList);
+		
+		query.addCriteria(criteria);
+		solrTemplate.delete(query);
+		solrTemplate.commit();
+		
+	}
+	
+	
 
 }
