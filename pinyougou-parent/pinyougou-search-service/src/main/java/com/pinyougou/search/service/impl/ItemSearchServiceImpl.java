@@ -223,7 +223,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 	public void importList(List list) {
 		// TODO Auto-generated method stub
 		
-		solrTemplate.saveBean(list);
+		solrTemplate.saveBeans(list);
 		solrTemplate.commit();
 	}
 
