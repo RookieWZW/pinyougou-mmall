@@ -52,6 +52,8 @@ public class CartController {
 				util.CookieUtil.deleteCookie(request, response, "cartList");
 				
 				cartService.saveCartListToRedis(username, cartList_redis); 
+				
+				System.out.println("save to redis");
 			}			
 			return cartList_redis;			
 		}	
@@ -61,6 +63,10 @@ public class CartController {
 	
 	@RequestMapping("/addGoodsToCartList")
 	public Result addGoodsToCartList(Long itemId,Integer num) {
+		
+		response.setHeader("Access-Control-Allow-Origin", "http://localhost:9105");
+		response.setHeader("Access-Control-Allow-Credentials", "true");
+
 		
 		String username = SecurityContextHolder.getContext().getAuthentication().getName(); 
 		System.out.println("当前登录用户："+username);
