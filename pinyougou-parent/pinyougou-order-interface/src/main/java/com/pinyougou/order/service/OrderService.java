@@ -1,6 +1,7 @@
 package com.pinyougou.order.service;
 import java.util.List;
 import com.pinyougou.pojo.TbOrder;
+import com.pinyougou.pojo.TbPayLog;
 
 import entity.PageResult;
 /**
@@ -57,5 +58,15 @@ public interface OrderService {
 	 * @return
 	 */
 	public PageResult findPage(TbOrder order, int pageNum,int pageSize);
+	
+	
+	
+	public TbPayLog searchPayLogFromRedis(String userId);
+	
+	
+	
+	public void updateOrderStatus(String out_trade_no,String transaction_id);
+	
+	
 	
 }
