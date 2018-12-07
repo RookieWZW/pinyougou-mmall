@@ -10,5 +10,5 @@ public interface WeixinPayService {
 	
 	public Map queryPayStatus(String out_trade_no);
 	
-	
+	public Map closePay(String out_trade_no);
 }

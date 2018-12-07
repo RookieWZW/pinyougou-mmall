@@ -108,8 +108,13 @@
 		<artifactId>pinyougou-common</artifactId>
 		<version>0.0.5-SNAPSHOT</version>
 	</dependency>
-	
-	
+
+
+	<dependency>
+		<groupId>com.pinyougou</groupId>
+		<artifactId>pinyougou-seckill-interface</artifactId>
+		<version>0.0.5-SNAPSHOT</version>
+	</dependency>
    </dependencies>
   
   
