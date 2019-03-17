@@ -49,6 +49,8 @@ public class GoodsController {
 	
 	@Autowired
 	private Destination topicPageDeleteDestination;
+	
+	
 	/**
 	 * 返回全部列表
 	 * @return

@@ -7,25 +7,10 @@
   </parent>
   <artifactId>pinyougou-dao</artifactId>
   
-  
-   <properties>
-  	 <env>dev</env>
-  </properties>
-  
-  <profiles>
-  	<profile>
-  		<id>dev</id>
-  		<properties>
-		  	 <env>dev</env>
-		</properties>
-  	</profile>
-  	<profile>
-  		<id>pro</id>
-  		<properties>
-		  	 <env>pro</env>
-		</properties>
-  	</profile> 
-  </profiles>
+ <properties>  
+    <!-- 设置默认编码 -->  
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
+</properties> 
   
   <dependencies>
   	<dependency>
@@ -65,9 +50,7 @@
   
   
   <build>
-	<filters>
-		<filter>src/main/resources/filters/db_${env}.properties</filter>
-	</filters>
+	
 	<resources>
 		<resource>
 			<directory>src/main/resources</directory>

@@ -5,7 +5,7 @@
     <artifactId>pinyougou-parent</artifactId>
     <version>0.0.5-SNAPSHOT</version>
   </parent>
-  <artifactId>pinyougou-sellergoods-service</artifactId>
+  <artifactId>pinyougou-seckill-service</artifactId>
   <packaging>war</packaging>
   
       <dependencies>
