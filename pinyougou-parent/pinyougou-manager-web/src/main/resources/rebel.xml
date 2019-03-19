@@ -9,6 +9,8 @@
 	<classpath>
 		<dir name="F:/pinyugou/pinyougou-mmall/pinyougou-parent/pinyougou-manager-web/target/classes">
 		</dir>
+		<dir name="F:/pinyugou/pinyougou-mmall/pinyougou-parent/pinyougou-manager-web/target/test-classes">
+		</dir>
 	</classpath>
 
 	<web>

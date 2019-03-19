@@ -1,10 +1,8 @@
 package com.pinyougou.page.service.impl;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +11,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.view.freemarker.FreeMarkerConfig;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 
 import com.pinyougou.mapper.TbGoodsDescMapper;
@@ -25,19 +23,23 @@ import com.pinyougou.pojo.TbGoods;
 import com.pinyougou.pojo.TbGoodsDesc;
 import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojo.TbItemExample;
-import com.pinyougou.pojo.TbUserExample.Criteria;
+import com.pinyougou.pojo.TbItemExample.Criteria;
 
+import freemarker.core.ParseException;
 import freemarker.template.Configuration;
+import freemarker.template.MalformedTemplateNameException;
 import freemarker.template.Template;
+import freemarker.template.TemplateNotFoundException;
 
 @Service
 public class ItemPageServiceImpl implements ItemPageService {
 
+	@Autowired
+	private FreeMarkerConfigurer freeMarkerConfigurer;
+	
 	@Value("${pagedir}")
 	private String pagedir;
 	
-	@Autowired
-	private FreeMarkerConfig freeMarkerConfig;
 	
 	@Autowired
 	private TbGoodsMapper goodsMapper;
@@ -53,24 +55,20 @@ public class ItemPageServiceImpl implements ItemPageService {
 	
 	@Override
 	public boolean genItemHtml(Long goodsId) {
-		// TODO Auto-generated method stub
+		
+		Configuration configuration = freeMarkerConfigurer.getConfiguration();
+		
 		try {
-			Configuration configuration = freeMarkerConfig.getConfiguration();
-			
 			Template template = configuration.getTemplate("item.ftl");
-			
-			Map dataModel = new HashMap<>();
-			
-			
+			//创建数据模型
+			Map dataModel=new HashMap<>();
+			//1.商品主表数据
 			TbGoods goods = goodsMapper.selectByPrimaryKey(goodsId);
-			
 			dataModel.put("goods", goods);
-			
-			
+			//2.商品扩展表数据
 			TbGoodsDesc goodsDesc = goodsDescMapper.selectByPrimaryKey(goodsId);
-			
 			dataModel.put("goodsDesc", goodsDesc);
-			
+			//3.读取商品分类
 			
 			String itemCat1 = itemCatMapper.selectByPrimaryKey(goods.getCategory1Id()).getName();
 			String itemCat2 = itemCatMapper.selectByPrimaryKey(goods.getCategory2Id()).getName();
@@ -78,50 +76,43 @@ public class ItemPageServiceImpl implements ItemPageService {
 			dataModel.put("itemCat1", itemCat1);
 			dataModel.put("itemCat2", itemCat2);
 			dataModel.put("itemCat3", itemCat3);
-
 			
-			TbItemExample example = new TbItemExample();
-			
-			com.pinyougou.pojo.TbItemExample.Criteria criteria = example.createCriteria();
-			
-			criteria.andStatusEqualTo("1");
-			criteria.andGoodsIdEqualTo(goodsId);
-			example.setOrderByClause("is_default desc");
+			//4.读取SKU列表
+			TbItemExample example=new TbItemExample();
+			Criteria criteria = example.createCriteria();
+			criteria.andGoodsIdEqualTo(goodsId);//SPU ID
+			criteria.andStatusEqualTo("1");//状态有效			
+			example.setOrderByClause("is_default desc");//按是否默认字段进行降序排序，目的是返回的结果第一条为默认SKU
 			
 			List<TbItem> itemList = itemMapper.selectByExample(example);
-			dataModel.put("itemList",itemList);
+			dataModel.put("itemList", itemList);
 			
+			Writer out=new FileWriter(pagedir+goodsId+".html");
 			
-			String dir = pagedir+goodsId+".html";
-			
-			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(dir), "UTF-8");
-			PrintWriter printWriter = new PrintWriter(writer);
-			
-			template.process(dataModel, printWriter);
-
-			
-			printWriter.close();
+			template.process(dataModel, out);//输出
+			out.close();
 			return true;
 			
-		}catch(Exception e) {
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		}
+		} 
 		
 	}
 
 	@Override
 	public boolean deleteItemHtml(Long[] goodsIds) {
-		// TODO Auto-generated method stub
 		try {
-			for (Long goodsId : goodsIds) {
-				new File(pagedir+goodsId+".html").delete();
+			for(Long goodsId:goodsIds){
+				new File(pagedir+goodsId+".html").delete();		
 			}
 			return true;
-		}catch(Exception e) {
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		}
+		}		
 	}
 
 }

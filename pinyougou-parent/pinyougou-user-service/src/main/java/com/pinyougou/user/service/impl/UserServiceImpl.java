@@ -165,11 +165,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private Destination smsDestination;
 	
-	/*@Value("${template_code}")
-	private String template_code;
 	
-	@Value("${sign_name}")
-	private String sign_name;*/
 	
 	@Override
 	public void createSmsCode(final String phone) {
@@ -187,10 +183,10 @@ public class UserServiceImpl implements UserService {
 			public Message createMessage(Session session) throws JMSException {
 				MapMessage message = session.createMapMessage();
 				message.setString("mobile", phone);//手机号
-			//	message.setString("template_code", template_code);//验证码
-			//	message.setString("sign_name", sign_name);//签名
+				message.setString("template_code", "SMS_160860620");//验证码
+				message.setString("sign_name", "品优购短信服务");//签名
 				Map map=new HashMap();
-				map.put("number", smscode);				
+				map.put("code", smscode);				
 				message.setString("param", JSON.toJSONString(map));
 				return message;
 			}

@@ -210,6 +210,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 			List brandList = (List) redisTemplate.boundHashOps("brandList").get(typeId);
 
 			map.put("brandList", brandList);
+			System.out.println(brandList);
 
 			List specList = (List) redisTemplate.boundHashOps("specList").get(typeId);
 
