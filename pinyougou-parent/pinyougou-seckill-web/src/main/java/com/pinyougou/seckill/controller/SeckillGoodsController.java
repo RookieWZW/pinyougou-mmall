@@ -116,7 +116,6 @@ public class SeckillGoodsController {
 	public List<TbSeckillGoods> findList(){
 		return seckillGoodsService.findList();
 	}
-
 	
 	@RequestMapping("/findOneFromRedis")
 	public TbSeckillGoods findOneFromRedis(Long id){

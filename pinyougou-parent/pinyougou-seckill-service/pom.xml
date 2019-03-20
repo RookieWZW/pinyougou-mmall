@@ -8,7 +8,8 @@
   <artifactId>pinyougou-seckill-service</artifactId>
   <packaging>war</packaging>
   
-      <dependencies>
+   
+   <dependencies>
   
   		<!-- Spring -->
 	<dependency>
@@ -43,10 +44,6 @@
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-test</artifactId>		
 	</dependency>
-	<dependency>
-	    <groupId>com.github.pagehelper</groupId>
-	    <artifactId>pagehelper</artifactId>	   
-	</dependency>	
 	<!-- dubbo相关 -->
 	<dependency>
 		<groupId>com.alibaba</groupId>
@@ -84,12 +81,12 @@
 
 	<dependency>
 		<groupId>com.pinyougou</groupId>
-		<artifactId>pinyougou-seckill-interface</artifactId>
+		<artifactId>pinyougou-dao</artifactId>
 		<version>0.0.5-SNAPSHOT</version>
 	</dependency>
 	<dependency>
 		<groupId>com.pinyougou</groupId>
-		<artifactId>pinyougou-dao</artifactId>
+		<artifactId>pinyougou-seckill-interface</artifactId>
 		<version>0.0.5-SNAPSHOT</version>
 	</dependency>
 	<dependency>
@@ -97,7 +94,9 @@
 		<artifactId>pinyougou-common</artifactId>
 		<version>0.0.5-SNAPSHOT</version>
 	</dependency>
-      </dependencies>
+	
+	
+   </dependencies>
   
   <build>  
 	  <plugins>	     
@@ -107,11 +106,12 @@
 				<version>2.2</version>
 				<configuration>
 					<!-- 指定端口 -->
-					<port>9001</port>
+					<port>9009</port>
 					<!-- 请求路径 -->
 					<path>/</path>
 				</configuration>
 	  	  </plugin>
 	  </plugins>  
     </build>
+  
 </project>

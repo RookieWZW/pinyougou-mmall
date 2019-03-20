@@ -70,7 +70,6 @@ public interface SeckillGoodsService {
 	 * @param id
 	 * @return
 	 */
-
 	public TbSeckillGoods findOneFromRedis(Long id);
 	
 }
